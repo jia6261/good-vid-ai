@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 原理与算力视频合集 - AI MindHub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Vue 3 CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Google Fonts Inter & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f6ff',
+                            100: '#e0edff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#0f172a',
+                            cyan: '#06b6d4',
+                            purple: '#8b5cf6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .bg-grid-pattern {
+            background-image: radial-gradient(rgba(59, 130, 246, 0.12) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.3);
+            box-shadow: 0 0 25px -5px rgba(14, 165, 233, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen bg-grid-pattern flex flex-col">
+
+    <div id="app" class="flex-grow flex flex-col min-h-screen">
+        
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+                <!-- Brand Title -->
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                        <i class="fa-solid fa-brain text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-base text-white leading-none">AI 原理知识库</h1>
+                        <span class="text-[11px] text-slate-400 font-mono">vids.json 驱动</span>
+                    </div>
+                </div>
+
+                <!-- Global Search (Desktop) -->
+                <div class="flex-1 max-w-md hidden md:block">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                        <input 
+                            type="text" 
+                            v-model="searchQuery" 
+                            placeholder="搜索已收录的视频标题或知识点..." 
+                            class="w-full bg-slate-800/80 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition"
+                        >
+                    </div>
+                </div>
+
+                <!-- Interactive Notice -->
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-400">
+                    <i class="fa-solid fa-sparkles"></i>
+                    <span>发送 B站 链接给 AI 自动更新代码</span>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div class="block md:hidden px-4 pb-3">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                    <input 
+                        type="text" 
+                        v-model="searchQuery" 
+                        placeholder="搜索视频标题或知识点..." 
+                        class="w-full bg-slate-800/80 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition"
+                    >
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full grid grid-cols-1 lg:grid-cols-4 gap-8">
+            
+            <!-- Sidebar -->
+            <aside class="lg:col-span-1 space-y-6">
+                <!-- Category Filter -->
+                <div class="glass-card rounded-2xl p-5">
+                    <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4 flex items-center justify-between">
+                        <span>知识分类</span>
+                        <span class="text-cyan-400 text-xs">{{ filteredVideos.length }} 个视频</span>
+                    </h2>
+                    <nav class="space-y-1.5">
+                        <button 
+                            v-for="cat in categories" 
+                            :key="cat"
+                            @click="selectedCategory = cat"
+                            :class="[
+                                selectedCategory === cat 
+                                    ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30 font-medium' 
+                                    : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 border-transparent',
+                                'w-full text-left px-3.5 py-2.5 rounded-xl border text-sm flex items-center justify-between transition-all'
+                            ]"
+                        >
+                            <span class="flex items-center gap-2.5">
+                                <i :class="getCategoryIcon(cat)" class="w-4 text-center"></i>
+                                {{ cat }}
+                            </span>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">
+                                {{ getCategoryCount(cat) }}
+                            </span>
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- AI Curator Box -->
+                <div class="glass-card rounded-2xl p-5 border-cyan-500/20 bg-gradient-to-b from-slate-900 to-cyan-950/20">
+                    <div class="flex items-center gap-2 text-cyan-400 font-semibold mb-2 text-sm">
+                        <i class="fa-solid fa-file-code"></i>
+                        <span>数据文件解耦 (vids.json)</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                        视频数据独立保存在同目录下的 <code class="text-cyan-300 bg-slate-800 px-1 py-0.5 rounded">vids.json</code> 中。可以直接编辑 JSON 添加新视频，也可把链接发给我自动生成数据。
+                    </p>
+                    <div class="pt-3 border-t border-slate-800/80 text-[11px] text-slate-400 flex justify-between">
+                        <span>已收录视频：<strong class="text-slate-200">{{ videos.length }}</strong></span>
+                        <span>知识点总数：<strong class="text-slate-200">{{ totalKnowledgePoints }}</strong></span>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="lg:col-span-3 space-y-6">
+                
+                <!-- Category Title -->
+                <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <span>{{ selectedCategory }}</span>
+                            <span class="text-sm font-normal text-slate-400">({{ filteredVideos.length }})</span>
+                        </h2>
+                    </div>
+                    <div class="text-xs text-slate-400">自动加载 JSON 数据</div>
+                </div>
+
+                <!-- Empty State -->
+                <div v-if="filteredVideos.length === 0" class="glass-card rounded-2xl p-12 text-center my-8">
+                    <div class="w-16 h-16 rounded-full bg-slate-800/80 border border-slate-700 flex items-center justify-center mx-auto mb-4 text-slate-500 text-2xl">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <h3 class="text-base font-semibold text-slate-300 mb-1">未找到相关视频</h3>
+                    <p class="text-xs text-slate-500 mb-4">请尝试更换搜索关键词或选择其他分类</p>
+                    <button 
+                        @click="searchQuery = ''; selectedCategory = '全部'"
+                        class="px-4 py-2 rounded-xl bg-cyan-500/20 text-cyan-400 text-xs hover:bg-cyan-500/30 transition border border-cyan-500/30"
+                    >
+                        重置搜索与分类
+                    </button>
+                </div>
+
+                <!-- Video Cards Grid -->
+                <div v-else class="grid grid-cols-1 gap-6">
+                    <div 
+                        v-for="video in filteredVideos" 
+                        :key="video.id"
+                        class="glass-card rounded-2xl overflow-hidden flex flex-col md:flex-row transition-all duration-300 hover:-translate-y-1"
+                    >
+                        <!-- Left: Embed Video Player -->
+                        <div class="w-full md:w-5/12 aspect-video bg-slate-950 relative border-b md:border-b-0 md:border-r border-slate-800 flex-shrink-0 overflow-hidden">
+                            <!-- Active playing video iframe -->
+                            <iframe 
+                                v-if="activePlayingId === video.id"
+                                :src="'https://player.bilibili.com/player.html?isOutside=true&bvid=' + video.bvid + (video.aid ? '&aid=' + video.aid : '') + (video.cid ? '&cid=' + video.cid : '') + '&p=1&high_quality=1&danmaku=0&autoplay=1&t=' + activeStartTime" 
+                                scrolling="no" 
+                                border="0" 
+                                frameborder="no" 
+                                framespacing="0" 
+                                allowfullscreen="true"
+                                referrerpolicy="no-referrer"
+                                class="w-full h-full"
+                            ></iframe>
+                            
+                            <!-- Cover with Play button for inactive videos -->
+                            <div 
+                                v-else 
+                                @click="playVideoAtTime(video.id, '00:00')"
+                                class="w-full h-full bg-slate-900/90 flex flex-col items-center justify-center relative cursor-pointer group hover:bg-slate-800/80 transition"
+                            >
+                                <div class="absolute inset-0 bg-gradient-to-tr from-cyan-950/40 via-slate-900 to-purple-950/40 opacity-80"></div>
+                                <div class="relative z-10 flex flex-col items-center gap-2.5">
+                                    <div class="w-13 h-13 rounded-full bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-slate-950 transition-all duration-300 shadow-lg shadow-cyan-500/20">
+                                        <i class="fa-solid fa-play text-xl ml-1"></i>
+                                    </div>
+                                    <span class="text-xs font-semibold text-slate-300 group-hover:text-cyan-300 transition">点击播放视频</span>
+                                </div>
+                                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-slate-950/80 text-[10px] text-slate-400 font-mono">Bilibili</span>
+                            </div>
+                        </div>
+
+                        <!-- Right: Detailed Content -->
+                        <div class="p-5 flex-grow flex flex-col justify-between">
+                            <div>
+                                <!-- Header tags -->
+                                <div class="flex items-center justify-between gap-2 mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2.5 py-0.5 rounded-lg bg-cyan-500/10 text-cyan-400 text-xs font-medium border border-cyan-500/20">
+                                            {{ video.category }}
+                                        </span>
+                                        <span class="px-2 py-0.5 rounded-lg bg-slate-800 text-slate-300 text-xs border border-slate-700">
+                                            难度: {{ video.difficulty }}
+                                        </span>
+                                    </div>
+                                    <span class="text-[11px] font-mono text-slate-500">{{ video.bvid }}</span>
+                                </div>
+
+                                <!-- Title -->
+                                <h3 class="font-bold text-lg text-white leading-snug">
+                                    {{ video.title }}
+                                </h3>
+                                
+                                <!-- Summary -->
+                                <p class="text-xs text-slate-300 mt-2.5 leading-relaxed bg-slate-950/40 p-3 rounded-xl border border-slate-800/80">
+                                    {{ video.summary }}
+                                </p>
+
+                                <!-- Core Knowledge Points with Interactive Timestamps -->
+                                <div class="mt-4">
+                                    <h4 class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-2 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-layer-group text-cyan-400"></i>
+                                        核心原理拆解 (点击时间跳转)
+                                    </h4>
+                                    <ul class="space-y-2">
+                                        <li 
+                                            v-for="(point, pIdx) in video.knowledgePoints" 
+                                            :key="pIdx" 
+                                            class="text-xs text-slate-200 flex items-start gap-2.5 group"
+                                        >
+                                            <button 
+                                                @click="playVideoAtTime(video.id, point.time)"
+                                                class="px-2 py-0.5 rounded-md bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 font-mono text-[11px] font-semibold flex-shrink-0 mt-0.5 hover:bg-cyan-500 hover:text-slate-950 transition-all flex items-center gap-1 cursor-pointer"
+                                                title="点击直接从该时间点播放"
+                                            >
+                                                <i class="fa-solid fa-play text-[9px] opacity-70"></i>
+                                                <span>{{ point.time }}</span>
+                                            </button>
+                                            <span class="leading-relaxed mt-0.5 group-hover:text-cyan-200 transition">{{ point.text }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Footer Links & Tags -->
+                            <div class="mt-5 pt-3 border-t border-slate-800/60 flex items-center justify-between">
+                                <div class="flex flex-wrap gap-1.5">
+                                    <span v-for="tag in video.tags" :key="tag" class="px-2 py-0.5 rounded bg-slate-800/80 text-[11px] text-slate-400">
+                                        #{{ tag }}
+                                    </span>
+                                </div>
+
+                                <a 
+                                    :href="video.originalUrl" 
+                                    target="_blank" 
+                                    class="px-3.5 py-1.5 rounded-xl bg-pink-600/90 hover:bg-pink-600 text-white text-xs font-medium transition flex items-center gap-1.5"
+                                >
+                                    <i class="fa-solid fa-tv"></i>
+                                    去 B 站原窗口播放
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-800/80 bg-slate-950/60 py-6 mt-12">
+            <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-2">
+                <p>AI 原理视频知识库 &copy; 2026 - 基于 index.html 与 vids.json 构建</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        const { createApp, ref, computed, onMounted } = Vue;
+
+        // Fallback data in case vids.json fetch fails (e.g., local file:// protocol CORS restriction)
+        const fallbackVideos = [
+            {
+                id: 1,
+                title: "【AI时代的国之重器，超节点决胜算力】",
+                bvid: "BV1N4t96aEVK",
+                aid: "117204641126207",
+                cid: "41535999929",
+                originalUrl: "https://www.bilibili.com/video/BV1N4t96aEVK/",
+                category: "基础设施与算力",
+                difficulty: "进阶",
+                summary: "深入剖析AI大模型时代的算力底座与集群演进。讲解 Scaling Law（缩放定律）下的算力爆发需求，探讨单芯片物理极限下，如何通过“超节点（Supernode）”与高速网络总线将成百上千颗芯片虚拟化为超级计算巨兽。",
+                knowledgePoints: [
+                    { time: "00:00", text: "视频导读：Scaling Law（缩放定律）引发的指数级算力需求与单卡物理瓶颈" },
+                    { time: "03:15", text: "超节点（Supernode）架构：利用 NVLink/RDMA 实现高带宽超大型虚拟节点" },
+                    { time: "07:40", text: "通信墙与存储墙：数据传输延迟对整体实效算力（MFU）的决定性影响" },
+                    { time: "11:20", text: "系统级工程：张量并行、流水线并行与全液冷散热机制" }
+                ],
+                tags: ["超节点", "AI算力", "GPU集群", "Scaling Law"],
+                dateAdded: "2026-03-09"
+            },
+            {
+                id: 2,
+                title: "【AI可以取代我，那我的意义是？】",
+                bvid: "BV1QMSjBREzr",
+                aid: "115626945283535",
+                cid: "34334376975",
+                originalUrl: "https://www.bilibili.com/video/BV1QMSjBREzr/",
+                category: "多模态与AIGC",
+                difficulty: "人文与哲学",
+                summary: "影视飓风团队历时近两年为患病主唱制作 MV，在此期间亲历 AIGC 生成视频技术的爆发演进。视频深度探讨了当 AI 可以在效率和产出上轻松超越人类时，人类的真实经历、情感共鸣与创作价值究竟如何存在。",
+                knowledgePoints: [
+                    { time: "00:00", text: "缘起：为患病主唱制作《银河列车》3D 动画 MV 的实拍与特效历程" },
+                    { time: "05:15", text: "冲击：传统 CG 特效工作流 vs 生成式 AI 视频工具（Sora/Runway等）的跨时代演化" },
+                    { time: "10:30", text: "困境：当多年积累的专业技能被 AI 高效解构，创作的“工具属性”遭受冲击" },
+                    { time: "16:45", text: "哲思：君子不器——人类的独特性在于“真实经历、感情共鸣与不完美体验过程”" }
+                ],
+                tags: ["AIGC", "影视飓风", "AI伦理", "视频生成", "人类价值"],
+                dateAdded: "2026-03-09"
+            },
+            {
+                id: 3,
+                title: "【六个AI相互入侵服务器，谁能杀死对方？】",
+                bvid: "BV1WoRXB4E5A",
+                aid: "116544491295824",
+                cid: "38214830283",
+                originalUrl: "https://www.bilibili.com/video/BV1WoRXB4E5A/",
+                category: "强化学习与Agent",
+                difficulty: "进阶",
+                summary: "UP主林亦LYi构建了一个封闭的网络安全攻防竞技场，让六大顶级 AI 大模型 Agent 在真实服务器环境中互相挖掘漏洞、入侵攻防并抢夺最高控制权（RCE/Pwn），硬核实测并展现了当前 LLM 在自主网络安全与 Agent 实战中的惊人突破与局限。",
+                knowledgePoints: [
+                    { time: "00:00", text: "实验设置：搭建封闭 CTF 沙箱环境，评估大模型 Agent 在网络安全领域的实战能力" },
+                    { time: "03:20", text: "攻防规则：授予同等初始权限，考察漏洞自动挖掘、RCE 利用与服务器控制权争夺" },
+                    { time: "07:15", text: "实操对比：攻击型 Agent 敏锐捕捉弱点 vs 防御型 Agent 识别与路径阻断" },
+                    { time: "12:40", text: "前沿启示：LLM 自主黑客攻防（Autonomous Cyber Operations）的发展潜力与安全伦理" }
+                ],
+                tags: ["AI攻防", "LLM Agent", "网络安全", "林亦LYi", "自主渗透"],
+                dateAdded: "2026-03-09"
+            }
+        ];
+
+        createApp({
+            setup() {
+                const videos = ref([]);
+                const activePlayingId = ref(1);
+                const activeStartTime = ref(0);
+
+                const categories = ref(["全部", "基础设施与算力", "大模型与Transformer", "神经网络与数学", "多模态与AIGC", "强化学习与Agent"]);
+                const selectedCategory = ref("全部");
+                const searchQuery = ref("");
+
+                // Helper to parse "MM:SS" into seconds
+                const parseTimeToSeconds = (timeStr) => {
+                    if (!timeStr) return 0;
+                    const parts = timeStr.split(':').map(Number);
+                    if (parts.length === 2) return parts[0] * 60 + parts[1];
+                    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+                    return 0;
+                };
+
+                // Play video at specified time stamp
+                const playVideoAtTime = (id, timeStr = '00:00') => {
+                    const seconds = parseTimeToSeconds(timeStr);
+                    activePlayingId.value = id;
+                    activeStartTime.value = seconds;
+                };
+
+                // Fetch videos from vids.json on mount with fail-safe fallback
+                onMounted(async () => {
+                    try {
+                        const res = await fetch('./vids.json');
+                        if (res.ok) {
+                            const data = await res.json();
+                            videos.value = data;
+                        } else {
+                            throw new Error('Failed to load vids.json');
+                        }
+                    } catch (err) {
+                        console.warn('Could not fetch vids.json directly (possibly due to local file:// CORS restrictions). Using embedded data.', err);
+                        videos.value = fallbackVideos;
+                    }
+                });
+
+                // Filter videos by category and search keyword
+                const filteredVideos = computed(() => {
+                    return videos.value.filter(v => {
+                        const matchesCategory = selectedCategory.value === "全部" || v.category === selectedCategory.value;
+                        const query = searchQuery.value.toLowerCase().trim();
+                        const matchesSearch = !query || 
+                            v.title.toLowerCase().includes(query) ||
+                            v.bvid.toLowerCase().includes(query) ||
+                            v.summary.toLowerCase().includes(query) ||
+                            v.tags.some(t => t.toLowerCase().includes(query)) ||
+                            v.knowledgePoints.some(kp => kp.text.toLowerCase().includes(query) || kp.time.includes(query));
+                        
+                        return matchesCategory && matchesSearch;
+                    });
+                });
+
+                const totalKnowledgePoints = computed(() => {
+                    return videos.value.reduce((acc, curr) => acc + (curr.knowledgePoints?.length || 0), 0);
+                });
+
+                const getCategoryCount = (cat) => {
+                    if (cat === "全部") return videos.value.length;
+                    return videos.value.filter(v => v.category === cat).length;
+                };
+
+                const getCategoryIcon = (cat) => {
+                    switch (cat) {
+                        case '基础设施与算力': return 'fa-solid fa-server text-cyan-400';
+                        case '大模型与Transformer': return 'fa-solid fa-network-wired text-purple-400';
+                        case '神经网络与数学': return 'fa-solid fa-square-root-variable text-emerald-400';
+                        case '多模态与AIGC': return 'fa-solid fa-wand-magic-sparkles text-amber-400';
+                        case '强化学习与Agent': return 'fa-solid fa-robot text-rose-400';
+                        default: return 'fa-solid fa-layer-group text-slate-400';
+                    }
+                };
+
+                return {
+                    videos,
+                    categories,
+                    selectedCategory,
+                    searchQuery,
+                    filteredVideos,
+                    totalKnowledgePoints,
+                    activePlayingId,
+                    activeStartTime,
+                    playVideoAtTime,
+                    getCategoryCount,
+                    getCategoryIcon
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
