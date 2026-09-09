@@ -1,0 +1,59 @@
+[
+{
+"id": 1,
+"title": "【AI时代的国之重器，超节点决胜算力】",
+"bvid": "BV1N4t96aEVK",
+"aid": "117204641126207",
+"cid": "41535999929",
+"originalUrl": "https://www.bilibili.com/video/BV1N4t96aEVK/",
+"category": "基础设施与算力",
+"difficulty": "进阶",
+"summary": "深入剖析AI大模型时代的算力底座与集群演进。讲解 Scaling Law（缩放定律）下的算力爆发需求，探讨单芯片物理极限下，如何通过“超节点（Supernode）”与高速网络总线将成百上千颗芯片虚拟化为超级计算巨兽。",
+"knowledgePoints": [
+{ "time": "00:00", "text": "视频导读：Scaling Law（缩放定律）引发的指数级算力需求与单卡物理瓶颈" },
+{ "time": "03:15", "text": "超节点（Supernode）架构：利用 NVLink/RDMA 实现高带宽超大型虚拟节点" },
+{ "time": "07:40", "text": "通信墙与存储墙：数据传输延迟对整体实效算力（MFU）的决定性影响" },
+{ "time": "11:20", "text": "系统级工程：张量并行、流水线并行与全液冷散热机制" }
+],
+"tags": ["超节点", "AI算力", "GPU集群", "Scaling Law"],
+"dateAdded": "2026-03-09"
+},
+{
+"id": 2,
+"title": "【AI可以取代我，那我的意义是？】",
+"bvid": "BV1QMSjBREzr",
+"aid": "115626945283535",
+"cid": "34334376975",
+"originalUrl": "https://www.bilibili.com/video/BV1QMSjBREzr/",
+"category": "多模态与AIGC",
+"difficulty": "人文与哲学",
+"summary": "影视飓风团队历时近两年为患病主唱制作 MV，在此期间亲历 AIGC 生成视频技术的爆发演进。视频深度探讨了当 AI 可以在效率和产出上轻松超越人类时，人类的真实经历、情感共鸣与创作价值究竟如何存在。",
+"knowledgePoints": [
+{ "time": "00:00", "text": "缘起：为患病主唱制作《银河列车》3D 动画 MV 的实拍与特效历程" },
+{ "time": "05:15", "text": "冲击：传统 CG 特效工作流 vs 生成式 AI 视频工具（Sora/Runway等）的跨时代演化" },
+{ "time": "10:30", "text": "困境：当多年积累的专业技能被 AI 高效解构，创作的“工具属性”遭受冲击" },
+{ "time": "16:45", "text": "哲思：君子不器——人类的独特性在于“真实经历、感情共鸣与不完美体验过程”" }
+],
+"tags": ["AIGC", "影视飓风", "AI伦理", "视频生成", "人类价值"],
+"dateAdded": "2026-03-09"
+},
+{
+"id": 3,
+"title": "【六个AI相互入侵服务器，谁能杀死对方？】",
+"bvid": "BV1WoRXB4E5A",
+"aid": "116544491295824",
+"cid": "38214830283",
+"originalUrl": "https://www.bilibili.com/video/BV1WoRXB4E5A/",
+"category": "强化学习与Agent",
+"difficulty": "进阶",
+"summary": "UP主林亦LYi构建了一个封闭的网络安全攻防竞技场，让六大顶级 AI 大模型 Agent 在真实服务器环境中互相挖掘漏洞、入侵攻防并抢夺最高控制权（RCE/Pwn），硬核实测并展现了当前 LLM 在自主网络安全与 Agent 实战中的惊人突破与局限。",
+"knowledgePoints": [
+{ "time": "00:00", "text": "实验设置：搭建封闭 CTF 沙箱环境，评估大模型 Agent 在网络安全领域的实战能力" },
+{ "time": "03:20", "text": "攻防规则：授予同等初始权限，考察漏洞自动挖掘、RCE 利用与服务器控制权争夺" },
+{ "time": "07:15", "text": "实操对比：攻击型 Agent 敏锐捕捉弱点 vs 防御型 Agent 识别与路径阻断" },
+{ "time": "12:40", "text": "前沿启示：LLM 自主黑客攻防（Autonomous Cyber Operations）的发展潜力与安全伦理" }
+],
+"tags": ["AI攻防", "LLM Agent", "网络安全", "林亦LYi", "自主渗透"],
+"dateAdded": "2026-03-09"
+}
+]
