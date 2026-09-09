@@ -20,6 +20,44 @@
 },
 {
 "id": 2,
+"title": "【Transformer 论文逐段精读】",
+"bvid": "BV1pu411o7BE",
+"aid": "975003507",
+"cid": "457813589",
+"originalUrl": "https://www.bilibili.com/video/BV1pu411o7BE/",
+"category": "大模型与Transformer",
+"difficulty": "深入",
+"summary": "AI 导师李沐带读大模型时代开山巨作《Attention Is All You Need》。逐段剖析 Self-Attention 自注意力机制、多头注意力、位置编码（Positional Encoding）与 Encoder-Decoder 架构的设计哲学。",
+"knowledgePoints": [
+{ "time": "00:00", "text": "论文背景：RNN/CNN 瓶颈与 Attention 机制的引入契机" },
+{ "time": "15:30", "text": "核心公式：Q, K, V 缩放点积注意力 (Scaled Dot-Product Attention) 数学原理" },
+{ "time": "38:10", "text": "Multi-Head Attention：多头机制如何捕捉多维度上下文特征" },
+{ "time": "58:45", "text": "位置编码与残差连接：解决序列顺序与深层网络梯度消失" }
+],
+"tags": ["Transformer", "Self-Attention", "李沐", "大模型原理", "NLP"],
+"dateAdded": "2026-03-09"
+},
+{
+"id": 3,
+"title": "【深度学习之神经网络的结构 Chapter 1】",
+"bvid": "BV1bx411U7rh",
+"aid": "15535503",
+"cid": "25338169",
+"originalUrl": "https://www.bilibili.com/video/BV1bx411U7rh/",
+"category": "神经网络与数学",
+"difficulty": "入门",
+"summary": "3Blue1Brown 经典动画演示，直观呈现多层感知机（MLP）与神经网络底层数学逻辑。将复杂的矩阵乘法与偏置（Bias/Weights）转化为具象化的几何图像与神经元激活状态。",
+"knowledgePoints": [
+{ "time": "00:00", "text": "神经元抽象：像素输入层到高阶特征识别的逐层激活" },
+{ "time": "04:30", "text": "权重 (Weights) 与偏置 (Biases) 的直观物理意义" },
+{ "time": "09:15", "text": "Sigmoid 与 ReLU 激活函数：赋予神经网络非线性表达能力" },
+{ "time": "14:20", "text": "矩阵运算：将大规模神经元连接转化为高维线性代数计算" }
+],
+"tags": ["3Blue1Brown", "神经网络", "深度学习", "线性代数", "可视化"],
+"dateAdded": "2026-03-09"
+},
+{
+"id": 4,
 "title": "【AI可以取代我，那我的意义是？】",
 "bvid": "BV1QMSjBREzr",
 "aid": "115626945283535",
@@ -38,7 +76,7 @@
 "dateAdded": "2026-03-09"
 },
 {
-"id": 3,
+"id": 5,
 "title": "【六个AI相互入侵服务器，谁能杀死对方？】",
 "bvid": "BV1WoRXB4E5A",
 "aid": "116544491295824",
